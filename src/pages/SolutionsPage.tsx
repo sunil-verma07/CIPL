@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight, Star, Search } from "lucide-react";
 import {
   COURSES,
   INTERNSHIP_FEATURES,
-  PROCESS_OUTCOMES,
+  PROCESS_OUTCOMES, 
 } from "../data/siteData";
 import SectionReveal, {
   StaggerContainer,
@@ -16,7 +16,7 @@ import CTABanner from "../components/sections/CTABanner";
 import bg_hero from "../assets/bg_solution_hero.jpg";
 import Button from "../components/ui/Button";
 import AnimatedInput from "../components/ui/AnimatedInput";
-import Carousel from '../components/ui/carousel.tsx'
+import Carousel from '../components/ui/Carousel.tsx'
 
 export default function SolutionsPage() {
   const [form, setForm] = useState({
