@@ -8,6 +8,7 @@ import BrandsPage from './pages/BrandsPage';
 import ContactPage from './pages/ContactPage';
 import SolutionsPage from './pages/SolutionsPage';
 import './index.css';
+import ScrollToTop from './helpers/ScrollToTop';
 
 function Layout({ children }) {
   return (
@@ -23,6 +24,7 @@ export default function App() {
   return (
     <ThemeProvider>
       <BrowserRouter>
+      <ScrollToTop />
         <Routes>
           <Route path="/" element={<Layout><HomePage /></Layout>} />
           <Route path="/about" element={<Layout><AboutPage /></Layout>} />
@@ -34,3 +36,4 @@ export default function App() {
     </ThemeProvider>
   );
 }
+

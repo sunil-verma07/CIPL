@@ -15,17 +15,20 @@ const variants = {
   white: {
     base:  'bg-white text-[var(--btn-primary)] border border-[var(--btn-primary)]',
   },
+  transparent:{
+    base:  'bg-transparent text-[#000] border border-[#000]',
+  }
 
 };
 
 // ─── size definitions ──────────────────────────────────────────────────────
 // Matches the hero screenshot: lg buttons are generously padded with `rounded-md`
 const sizes = {
-  xs: 'px-3 py-1.5 text-xs rounded-xs gap-1',
-  sm: 'px-4 py-2   text-sm rounded-xs gap-1.5',
-  md: 'px-5 py-2.5 text-sm rounded-xs gap-2',
-  lg: 'px-7 py-3   text-base rounded-xs gap-2.5',
-  xl: 'px-8 py-3.5 text-lg  rounded-xs gap-3',
+  xs: 'px-3 py-1.5 text-xs rounded-sm gap-1',
+  sm: 'px-4 py-2   text-sm rounded-sm gap-1.5',
+  md: 'px-4 py-2.5 text-sm rounded-sm gap-2',
+  lg: 'px-4 py-3   text-sm rounded-sm gap-2.5',
+  xl: 'px-4 py-3.5 text-sm  rounded-sm gap-3',
 };
 
 // ─── component ─────────────────────────────────────────────────────────────

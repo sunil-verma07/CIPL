@@ -1,54 +1,72 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import SectionReveal from '../ui/SectionReveal';
-import Button from '../ui/Button';
+import robotBg from '../../assets/cta_banner.jpg';
+import Button from "../ui/Button";
+import SectionReveal from "../ui/SectionReveal";
 
 export default function CTABanner() {
   return (
     <SectionReveal>
-      <section className="relative overflow-hidden py-20 px-6">
-        {/* Background image */}
-        <div className="absolute inset-0">
-          <img
-            src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1600&q=80"
-            alt=""
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0"
-            style={{ background: 'linear-gradient(135deg, rgba(8,11,20,0.93) 0%, rgba(26,107,255,0.35) 100%)' }} />
-        </div>
+      <section className="relative overflow-hidden w-full">
 
-        <div className="relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="max-w-xl">
-            <motion.h2
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-              className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-white leading-tight">
-              Build,{' '}
-              <span style={{ color: 'var(--color-primary-light)' }}>Scale,</span>
-              {' '}and Solve.
-            </motion.h2>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.15, duration: 0.6 }}
-              className="mt-4 text-sm leading-relaxed"
-              style={{ color: 'rgba(255,255,255,0.7)' }}>
-              Whether it's Healthcare, Finance, Legal, or Data Intelligence or IT infrastructure Credible delivers the sharpest digital solutions that drive real-world outcomes.
-            </motion.p>
-          </div>
+        <img
+          src={robotBg}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover object-bottom"
+        />
 
+
+        {/* Centered frosted glass card */}
+        <div className="relative z-10 flex items-center justify-center py-10 px-4 sm:px-6">
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}>
-            <Link to="/contact">
-              <Button variant="primary" size="lg">Start Your Journey</Button>
-            </Link>
+            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-col items-center text-center max-w-[900px] w-full px-8 sm:px-12 py-10"
+            style={{
+              background: 'rgba(255, 255, 255, 0.38)',
+         
+              borderRadius: '16px',
+              border: '1px solid rgba(255,255,255,0.55)',
+              boxShadow: '0 4px 32px rgba(180,185,210,0.18)',
+            }}
+          >
+            {/* Heading */}
+            <motion.h2
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1, duration: 0.6 }}
+              className="text-3xl sm:text-4xl font-semibold leading-tight mb-4"
+              style={{ color: '#1A1A1A' }}
+            >
+              Build, Scale, and Solve.
+            </motion.h2>
+
+            {/* Body */}
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+              className="text-sm leading-[1.75] mb-7 max-w-[560px]"
+              style={{ color: '#1A1A1A' }}
+            >
+              Whether it's Healthcare, Finance, Legal, or Data Intelligence or IT infrastructure, Crediple delivers
+              the structured digital solutions that drive real world outcomes. We don't just invest in companies;
+              we engineer the future of professional services.
+            </motion.p>
+
+            {/* CTA Button */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.93 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3, type: 'spring', stiffness: 220, damping: 18 }}
+            >
+              <Button variant="secondary" size="lg">Start Your Journey</Button>
+            </motion.div>
           </motion.div>
         </div>
       </section>

@@ -47,10 +47,10 @@ function AnimatedYear({ value, delay = 0 }) {
 
 export default function MilestonesSection() {
   return (
-    <section className="py-20" style={{ background: "var(--bg-base)" }}>
+    <section className="py-20" style={{ background: "#F8F8F8" }}>
       <div className="">
         {/* GRID */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 bg-white">
           {MILESTONES.map((m, i) => (
             <motion.div
               key={i}
@@ -83,8 +83,9 @@ export default function MilestonesSection() {
 
         {/* BUTTON */}
         <SectionReveal className="text-center mt-12">
-        <Button variant="secondary" size="lg">Read More</Button>
-
+          <Button variant="secondary" size="lg">
+            Read More
+          </Button>
         </SectionReveal>
       </div>
     </section>

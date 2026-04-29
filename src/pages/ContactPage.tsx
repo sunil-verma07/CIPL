@@ -1,181 +1,313 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Phone, Mail, CheckCircle } from 'lucide-react';
-import AnimatedInput from '../components/ui/AnimatedInput';
-import Button from '../components/ui/Button';
-import SectionReveal, { StaggerContainer, fadeLeftItem, fadeRightItem } from '../components/ui/SectionReveal';
-import CTABanner from '../components/sections/CTABanner';
+import { useState } from "react";
+import { motion } from "framer-motion";
+import Button from "../components/ui/Button";
+import AnimatedInput from "../components/ui/AnimatedInput";
+import SectionReveal from "../components/ui/SectionReveal";
+import mapBg from "../assets/contact_banner_bg.jpg";
+import pinIcon from "../assets/map_pin.png";
 
-function validate(fields) {
-  const errs = {};
-  if (!fields.name.trim()) errs.name = 'Name is required';
-  if (!fields.email.trim()) errs.email = 'Email is required';
-  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email)) errs.email = 'Enter a valid email';
-  if (!fields.subject.trim()) errs.subject = 'Subject is required';
-  if (!fields.message.trim()) errs.message = 'Message is required';
-  else if (fields.message.trim().length < 20) errs.message = 'Message must be at least 20 characters';
-  return errs;
-}
+// ─── Variants ────────────────────────────────────────────────────────────────
+const fadeUp = {
+  hidden: { opacity: 0, y: 28 },
+  show: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+  }),
+};
 
+const fadeLeft = {
+  hidden: { opacity: 0, x: -28 },
+  show: { opacity: 1, x: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+};
+
+const fadeRight = {
+  hidden: { opacity: 0, x: 28 },
+  show: { opacity: 1, x: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+};
+
+const stagger = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.1 } },
+};
+
+// ─── Component ───────────────────────────────────────────────────────────────
 export default function ContactPage() {
-  const [fields, setFields] = useState({ name: '', email: '', subject: '', message: '' });
-  const [touched, setTouched] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [sent, setSent] = useState(false);
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
 
-  const errors = validate(fields);
-
-  const handleChange = (e) => setFields(f => ({ ...f, [e.target.name]: e.target.value }));
-  const handleBlur = (e) => setTouched(t => ({ ...t, [e.target.name]: true }));
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setTouched({ name: true, email: true, subject: true, message: true });
-    if (Object.keys(errors).length > 0) return;
-    setLoading(true);
-    await new Promise(r => setTimeout(r, 1800));
-    setLoading(false);
-    setSent(true);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   return (
-    <>
-      {/* Hero */}
-      <section className="relative py-16 px-6 overflow-hidden"
-        style={{ background: 'var(--bg-elevated)' }}>
-        {/* Map-like grid bg */}
-        <div className="absolute inset-0 opacity-10 pointer-events-none"
-          style={{ backgroundImage: 'radial-gradient(circle, var(--color-primary) 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
-        <motion.div className="absolute right-1/3 top-6 text-3xl"
-          animate={{ y: [0, -8, 0] }} transition={{ duration: 2.5, repeat: Infinity }}>
-          📍
-        </motion.div>
-        <div className="relative z-10 max-w-7xl mx-auto">
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}
-            className="text-xs font-display uppercase tracking-widest mb-4"
-            style={{ color: 'var(--text-muted)' }}>Contact Us</motion.p>
-          <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.7 }}
-            className="text-4xl sm:text-5xl font-display font-bold mb-4"
-            style={{ color: 'var(--text-primary)' }}>Contact Us</motion.h1>
-          <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-            Support is provided Monday – Friday, we aim to reply within 1 business day,<br className="hidden sm:block" />
-            but occasionally it may take longer.
+    <div className="bg-white font-sans overflow-x-hidden">
+
+      {/* ── HERO ──────────────────────────────────────────────────────────── */}
+      <section
+        className="relative overflow-hidden"
+        style={{ background: '#F7F0EA', minHeight: '220px' }}
+      >
+        {/* Map bg — right half only */}
+        <div
+          className="absolute inset-0 bg-no-repeat bg-right bg-cover"
+          style={{
+            backgroundImage: `url(${mapBg})`,
+            opacity: 0.48,
+          }}
+        />
+
+        {/* Dotted grid overlay — right portion */}
+        <div
+          className="absolute inset-y-0 right-0 w-full pointer-events-none"
+          style={{
+            backgroundImage:
+              'radial-gradient(circle, #B8A99A 1px, transparent 1px)',
+            backgroundSize: '22px 22px',
+            opacity: 0.45,
+            maskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 30%, transparent 70%)',
+            WebkitMaskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 30%, transparent 70%)',
+          }}
+        />
+
+        {/* Animated Pin */}
+        <div className="absolute left-[60%] top-10 hidden md:flex flex-col items-center" style={{ transform: 'translateX(80px)' }}>
+          <motion.div
+            animate={{ y: [0, -12, 0] }}
+            transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <img src={pinIcon} alt="location pin" className="w-10 h-12 drop-shadow-md" />
+          </motion.div>
+          <motion.div
+            animate={{ scale: [1, 0.65, 1], opacity: [0.5, 0.25, 0.5] }}
+            transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
+            className="mt-1 w-8 h-2 rounded-full blur-sm"
+            style={{ background: '#9B8070' }}
+          />
+        </div>
+
+        {/* Content */}
+        <div className="relative z-10 max-w-7xl mx-auto px-6 py-14 sm:py-16">
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="text-xs mb-4"
+            style={{ color: '#999999' }}
+          >
+            Contact Us
+          </motion.p>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="text-3xl sm:text-4xl font-bold mb-4"
+            style={{ color: '#1A1A2E' }}
+          >
+            Contact Us
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            className="text-sm max-w-xs sm:max-w-sm leading-relaxed"
+            style={{ color: '#888888' }}
+          >
+            Support is provided Monday – Friday, we aim to reply within 1 business
+            day, but occasionally it may take longer.
           </motion.p>
         </div>
       </section>
 
-      {/* Form + Info */}
-      <section className="section-py" style={{ background: 'var(--bg-base)' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-            {/* Left: Quote */}
-            <SectionReveal direction="left">
-              <div className="contact-quote">
-                <h2 className="text-2xl sm:text-3xl font-display font-bold leading-tight mb-6"
-                  style={{ color: 'var(--text-primary)' }}>
-                  To make requests for further information,{' '}
-                  <span style={{ color: 'var(--color-primary)' }}>contact us</span>{' '}
-                  via our social channels.
-                </h2>
-                <p className="text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>
-                  We just need a couple of hours!
-                </p>
-                <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                  No more than 2 working days since receiving your issue ticket.
-                </p>
-              </div>
-            </SectionReveal>
+      {/* ── FORM SECTION ──────────────────────────────────────────────────── */}
+      <section className="py-16 sm:py-20">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
 
-            {/* Right: Form */}
-            <SectionReveal direction="right">
-              <AnimatePresence mode="wait">
-                {sent ? (
-                  <motion.div key="success"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="flex flex-col items-center justify-center gap-4 py-16 text-center rounded-2xl"
-                    style={{ background: 'var(--card-bg)', border: '1px solid var(--color-accent-teal)' }}>
-                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
-                      transition={{ type: 'spring', stiffness: 300, damping: 16 }}>
-                      <CheckCircle size={56} style={{ color: 'var(--color-accent-teal)' }} />
-                    </motion.div>
-                    <h3 className="text-xl font-display font-bold" style={{ color: 'var(--text-primary)' }}>
-                      Message Sent!
-                    </h3>
-                    <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                      We'll get back to you within 1 business day.
-                    </p>
-                    <Button variant="secondary" onClick={() => { setSent(false); setFields({ name:'',email:'',subject:'',message:'' }); setTouched({}); }}>
-                      Send Another
-                    </Button>
-                  </motion.div>
-                ) : (
-                  <motion.form key="form" onSubmit={handleSubmit} noValidate
-                    className="flex flex-col gap-5">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                      <AnimatedInput name="name" placeholder="Name*" value={fields.name}
-                        onChange={handleChange} onBlur={handleBlur} required
-                        error={touched.name && errors.name} success={touched.name && !errors.name && fields.name} />
-                      <AnimatedInput name="email" type="email" placeholder="Email*" value={fields.email}
-                        onChange={handleChange} onBlur={handleBlur} required
-                        error={touched.email && errors.email} success={touched.email && !errors.email && fields.email} />
-                    </div>
-                    <AnimatedInput name="subject" placeholder="Subject*" value={fields.subject}
-                      onChange={handleChange} onBlur={handleBlur} required
-                      error={touched.subject && errors.subject} success={touched.subject && !errors.subject && fields.subject} />
-                    <AnimatedInput name="message" placeholder="Please describe what you need..." value={fields.message}
-                      onChange={handleChange} onBlur={handleBlur} multiline rows={5} required
-                      error={touched.message && errors.message} success={touched.message && !errors.message && fields.message} />
-                    <Button type="submit" variant="primary" size="lg" loading={loading} fullWidth>
-                      {loading ? 'Sending...' : 'Send Message'}
-                    </Button>
-                  </motion.form>
-                )}
-              </AnimatePresence>
-            </SectionReveal>
+          {/* Left — heading with left accent bar */}
+          <motion.div
+            variants={fadeLeft}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            className="flex flex-col"
+          >
+            {/* Accent bar + heading block */}
+            <div
+              className="pl-5 mb-8"
+              style={{ borderLeft: '3px solid #B9CCE1' }}
+            >
+              <h2
+                className="text-2xl sm:text-3xl font-bold leading-tight mb-5"
+                style={{ color: '#1A1A2E' }}
+              >
+                Contact us for more{' '}
+                <br className="hidden sm:block" />
+                Information
+              </h2>
+              <p
+                className="text-sm leading-relaxed"
+                style={{ color: '#888888' }}
+              >
+                We just need a couple of hours!
+                <br />
+                No more than 2 working days since receiving your issue ticket.
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Right — Form */}
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+          >
+            <motion.form
+              className="flex flex-col gap-4"
+              onSubmit={(e) => e.preventDefault()}
+            >
+              <motion.div
+                variants={fadeUp}
+                className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+              >
+                <AnimatedInput
+                  name="name"
+                  placeholder="Name*"
+                  value={form.name}
+                  onChange={handleChange}
+                  required
+                />
+                <AnimatedInput
+                  name="email"
+                  type="email"
+                  placeholder="Email*"
+                  value={form.email}
+                  onChange={handleChange}
+                  required
+                />
+              </motion.div>
+
+              <motion.div variants={fadeUp}>
+                <AnimatedInput
+                  name="subject"
+                  placeholder="Subject*"
+                  value={form.subject}
+                  onChange={handleChange}
+                  required
+                />
+              </motion.div>
+
+              <motion.div variants={fadeUp}>
+                <AnimatedInput
+                  name="message"
+                  placeholder="Please describe what you need..."
+                  value={form.message}
+                  onChange={handleChange}
+                  multiline
+                  rows={5}
+                />
+              </motion.div>
+
+              <motion.div
+                variants={fadeUp}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                className="w-fit"
+              >
+                <Button variant="dark">Send Message</Button>
+              </motion.div>
+            </motion.form>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── ADDRESS SECTION ───────────────────────────────────────────────── */}
+      <section className="py-16 sm:py-20">
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          className="max-w-lg mx-auto px-6 relative"
+        >
+          {/* Left vertical bar */}
+          <span
+            className="absolute left-0 top-0 h-full w-[2px]"
+            style={{ background: '#B9CCE1' }}
+          />
+          {/* Right vertical bar */}
+          <span
+            className="absolute right-0 top-0 h-full w-[2px]"
+            style={{ background: '#B9CCE1' }}
+          />
+
+          {/* Content */}
+          <div className="text-center py-10 px-8">
+            <h3
+              className="text-2xl font-bold mb-3"
+              style={{ color: '#3B4F9C' }}
+            >
+              Hyderabad
+            </h3>
+            <p
+              className="text-sm leading-relaxed mb-3"
+              style={{ color: '#666666' }}
+            >
+              Sattva Knowledge City, Hi-Tech City - 500081,
+              <br />
+              Hyderabad, Telangana, India
+            </p>
+            
+              <a href="mailto:hello@crediple.com"
+              className="text-sm transition-opacity hover:opacity-75"
+              style={{ color: 'var(--color-primary)' }}
+            >
+              hello@crediple.com
+            </a>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* ── CTA BANNER ────────────────────────────────────────────────────── */}
+      <SectionReveal>
+        <div
+          className="py-14 px-6"
+          style={{ background: '#F7F0EA' }}
+        >
+          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+            <motion.h2
+              variants={fadeLeft}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+              className="text-2xl sm:text-3xl font-bold leading-snug"
+              style={{ color: '#1A1A2E' }}
+            >
+              We run all kinds of IT services that vow
+              <br className="hidden sm:block" />
+              your success
+            </motion.h2>
+
+            <motion.div
+              variants={fadeRight}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
+            >
+              <Button variant="dark" icon="💬">Let's Talk</Button>
+            </motion.div>
           </div>
         </div>
-      </section>
+      </SectionReveal>
 
-      {/* Office info */}
-      <section className="section-py" style={{ background: 'var(--bg-surface)' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6 divide-x divide-[var(--border-color)]">
-            {[
-              { city: 'Bengaluru', address: '374 Street 5 Canning Blvd, Bangalore - 560 001, India', phone: '+91 999 9999 999', email: 'info.bengaluru@bigdoor.com' },
-              { city: 'Mumbai', address: '12 BKC Complex, Bandra, Mumbai - 400 051, India', phone: '+91 888 8888 888', email: 'info.mumbai@crediple.com' },
-              { city: 'Delhi', address: '45 Connaught Place, New Delhi - 110 001, India', phone: '+91 777 7777 777', email: 'info.delhi@crediple.com' },
-            ].map((office, i) => (
-              <motion.div key={i} variants={fadeLeftItem}
-                className="pl-6 first:pl-0">
-                <h3 className="text-xl font-display font-bold mb-3"
-                  style={{ color: 'var(--color-accent-gold)' }}>{office.city}</h3>
-                <div className="flex flex-col gap-3">
-                  <div className="flex gap-2">
-                    <MapPin size={15} className="mt-0.5 flex-shrink-0" style={{ color: 'var(--text-muted)' }} />
-                    <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{office.address}</p>
-                  </div>
-                  <div className="flex gap-2 items-center">
-                    <Phone size={15} style={{ color: 'var(--text-muted)' }} />
-                    <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{office.phone}</p>
-                  </div>
-                  <div className="flex gap-2 items-center">
-                    <Mail size={15} style={{ color: 'var(--text-muted)' }} />
-                    <a href={`mailto:${office.email}`}
-                      className="text-sm hover:underline"
-                      style={{ color: 'var(--color-primary)' }}>{office.email}</a>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </StaggerContainer>
-        </div>
-      </section>
-
-      <CTABanner />
-    </>
+    </div>
   );
 }

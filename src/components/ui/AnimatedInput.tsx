@@ -43,7 +43,7 @@ export default function AnimatedInput({
             placeholder={placeholder}
             rows={rows}
             required={required}
-            className={`input-field resize-none ${statusClass}`}
+            className={`input-field resize-none  bg-[#F0FAFF] ${statusClass}`}
           />
         ) : (
           <input
@@ -55,7 +55,7 @@ export default function AnimatedInput({
             onBlur={onBlur}
             placeholder={placeholder}
             required={required}
-            className={`input-field ${statusClass}`}
+            className={`input-field bg-[#F0FAFF]  ${statusClass}`}
           />
         )}
       </motion.div>

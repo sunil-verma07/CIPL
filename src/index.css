@@ -54,16 +54,29 @@
 }
 
 html { scroll-behavior: smooth; }
+
+
 body {
-   font-family: 'Jost', sans-serif;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  font-optical-sizing: auto;
-  font-style: normal;
+  font-family: 'Jost', sans-serif ;
   background-color: var(--bg-base);
+
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(0,0,0,0.02) 0px,
+      rgba(0,0,0,0.02) 1px,
+      transparent 1px,
+      transparent 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(0,0,0,0.02) 0px,
+      rgba(0,0,0,0.02) 1px,
+      transparent 1px,
+      transparent 4px
+    );
+
   color: var(--text-primary);
-  transition: background-color 0.3s ease, color 0.3s ease;
-  -webkit-font-smoothing: antialiased;
 }
 
 ::-webkit-scrollbar { width: 6px; }
@@ -88,23 +101,18 @@ body {
 }
 
 .input-field {
-  background: var(--bg-surface);
-  border: 1.5px solid var(--border-color);
-  color: var(--text-primary);
-  border-radius: var(--radius-md);
+  background: #F0FAFF;
+  color: #939393;
   padding: 0.75rem 1rem;
   width: 100%;
   font-family: 'DM Sans', sans-serif;
-  font-size: 1rem;
+  font-size: 14px;
   transition: border-color 0.25s ease, box-shadow 0.25s ease;
   outline: none;
+  margin:0.5rem 0;
 }
 .input-field::placeholder { color: var(--text-muted); }
-.input-field:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(26,107,255,0.15);
-  background: var(--bg-base);
-}
+
 .input-field.input-error {
   border-color: #EF4444;
   box-shadow: 0 0 0 3px rgba(239,68,68,0.12);

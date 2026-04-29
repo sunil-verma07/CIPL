@@ -8,22 +8,30 @@ import {
   fadeRightItem,
 } from "../ui/SectionReveal";
 import SectionReveal from "../ui/SectionReveal";
-
+import bg from "../../assets/brands_bg.png";
 
 export default function BrandsSection() {
   return (
-    <section className="section-py" style={{ background: "var(--bg-base)" }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section
+      className="section-py relative w-full"
+      style={{ background: "var(--bg-base)" }}
+    >
+      <img
+        src={bg}
+        className="absolute ml-[40%] w-[50vw] z-0 pointer-events-none select-none"
+        aria-hidden="true"
+      />
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <SectionReveal className="text-center mb-14">
+        <SectionReveal className="text-center mb-14 z-10">
           <p
-            className="text-xs font-display font-semibold uppercase tracking-widest mb-3"
-            style={{ color: "var(--color-primary)" }}
+            className="text-sm font-display font-[500] uppercase tracking-widest mb-3"
+            style={{ color: "#999999" }}
           >
             OUR BRANDS
           </p>
           <h2
-            className="text-3xl sm:text-4xl font-display font-bold"
+            className="text-3xl sm:text-4xl font-display font-[600]"
             style={{ color: "var(--text-primary)" }}
           >
             Our Brands.{" "}
@@ -31,9 +39,9 @@ export default function BrandsSection() {
           </h2>
         </SectionReveal>
 
-        {/* Brands Grid */}
         <StaggerContainer
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+          // ↓ gap-20 on mobile (accounts for 32px half-button + breathing room), lg can be tighter
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-20 sm:gap-20 lg:gap-8"
           staggerDelay={0.12}
         >
           {BRANDS.map((brand, i) => (
@@ -45,11 +53,12 @@ export default function BrandsSection() {
               style={{
                 background: "var(--card-bg)",
                 boxShadow: "var(--shadow-md)",
+                overflow: "visible", // ← button bleeds out without clipping
+                marginBottom: "2rem", // ← reserves space for the half-button below
               }}
-              className="h-80 p-8 flex flex-col gap-2 text-center group cursor-pointer relative"
+              className="p-8 pb-6 flex flex-col gap-2 text-center group cursor-pointer relative"
             >
               <img src={brand.image} className="w-40 bg-cover mx-auto" alt="" />
-
 
               <h3
                 className="text-[22px] font-display font-medium leading-tight"
@@ -65,18 +74,22 @@ export default function BrandsSection() {
                 {brand.description}
               </p>
 
-              {/* Arrow */}
+              {/* Arrow — absolute, centered on bottom edge, half outside */}
               <Link
                 to={brand.href || `/brands/${brand.id}`}
                 aria-label={`Learn more about ${brand.name}`}
+                style={{ position: "static" }} // keeps Link in flow so it doesn't shrink card
               >
                 <motion.div
                   whileTap={{ scale: 0.92 }}
                   transition={{ type: "spring", stiffness: 420, damping: 18 }}
-                  className="absolute left-1/2 -bottom-8 w-16 h-16 rounded-full bg-(--color-primary) flex justify-center items-center text-(--bg-base) "
+                  className="absolute w-16 h-16 rounded-full bg-(--color-primary) flex justify-center items-center text-(--bg-base)"
                   style={{
-                    boxShadow: "0 4px 16px rgba(26,107,255,0.35)",
+                    bottom: "-2rem", // ← half of h-16 (4rem / 2 = 2rem)
+                    left: "50%",
                     transform: "translateX(-50%)",
+                    boxShadow: "0 4px 16px rgba(26,107,255,0.35)",
+                    zIndex: 10,
                   }}
                 >
                   <motion.div
@@ -91,7 +104,7 @@ export default function BrandsSection() {
 
               {/* Bottom accent */}
               <motion.div
-                className="h-0.5 rounded-full -mx-6 -mb-6"
+                className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full"
                 style={{ background: brand.color }}
                 initial={{ scaleX: 0 }}
                 whileHover={{ scaleX: 1 }}

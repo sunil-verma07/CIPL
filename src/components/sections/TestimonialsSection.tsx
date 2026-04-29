@@ -1,13 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { TESTIMONIALS } from '../../data/siteData';
 import SectionReveal from '../ui/SectionReveal';
 
 const INTERVAL = 4000;
 const CARD_WIDTH = 370;
-const CARD_GAP = 20;
-const SIDE_OFFSET = CARD_WIDTH + CARD_GAP; // 390px — center-to-center distance
+const CARD_GAP = 24;
+const SIDE_OFFSET = CARD_WIDTH + CARD_GAP;
 
 export default function TestimonialsSection() {
   const [current, setCurrent] = useState(0);
@@ -16,11 +15,10 @@ export default function TestimonialsSection() {
   const total = TESTIMONIALS.length;
 
   const goTo = (index: number) => setCurrent((index + total) % total);
-  const go = (dir: number) => goTo(current + dir);
 
   useEffect(() => {
     if (paused) return;
-    intervalRef.current = setInterval(() => go(1), INTERVAL);
+    intervalRef.current = setInterval(() => goTo(current + 1), INTERVAL);
     return () => clearInterval(intervalRef.current!);
   }, [paused, current]);
 
@@ -30,44 +28,35 @@ export default function TestimonialsSection() {
   };
 
   return (
-    <section className="section-py" style={{ background: '#EAF7F7' }}>
+    <section className="section-py" style={{ background: '#DFF0EF' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}
-        <SectionReveal className="text-center mb-14">
+        <SectionReveal className="text-center mb-16">
           <p
-            className="text-xs font-display font-semibold uppercase tracking-widest mb-3"
-            style={{ color: 'var(--color-primary)' }}
+            className="text-[11px] font-semibold uppercase tracking-[0.25em] mb-5"
+            style={{ color: '#7AADAA' }}
           >
             TESTIMONIALS
           </p>
-          <h2
-            className="text-3xl sm:text-4xl font-display font-bold"
-            style={{ color: 'var(--text-primary)' }}
-          >
+                    <h2 className="text-3xl sm:text-4xl font-semibold text-gray-800 tracking-tight">
+
             Why do people praise about{' '}
-            <span style={{ color: 'var(--color-primary)' }}>Crediple?</span>
+            <span style={{ color: '#3B82F6' }}>Crediple?</span>
           </h2>
         </SectionReveal>
 
         {/* Carousel */}
         <div
-          className="relative"
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >
-          {/* Track — height = card height (460px) + breathing room for scale(0.88) */}
-          <div
-            className="relative overflow-hidden"
-            style={{ height: '510px' }}
-          >
+          <div className="relative overflow-hidden" style={{ height: '440px' }}>
             {TESTIMONIALS.map((t, i) => {
               const offset = getOffset(i);
               const isActive = offset === 0;
               const isSide = offset === -1 || offset === 1;
-              const isVisible = isActive || isSide;
-
-              if (!isVisible) return null;
+              if (!isActive && !isSide) return null;
 
               const xValue =
                 offset === 0
@@ -81,11 +70,11 @@ export default function TestimonialsSection() {
                   key={i}
                   animate={{
                     x: xValue,
-                    scale: isActive ? 1 : 0.88,
-                    opacity: isActive ? 1 : 0.70,
+                    scale: isActive ? 1 : 0.9,
+                    opacity: isActive ? 1 : 0.65,
                     zIndex: isActive ? 10 : 5,
                   }}
-                  transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1] }}
                   style={{
                     left: '50%',
                     position: 'absolute',
@@ -93,59 +82,58 @@ export default function TestimonialsSection() {
                     translateY: '-50%',
                     width: `${CARD_WIDTH}px`,
                   }}
-                  className={isActive ? '' : 'pointer-events-none '}
+                  className={isActive ? '' : 'pointer-events-none'}
                 >
                   <div
-                    className="p-8"
+                    className="flex flex-col items-center text-center p-14"
                     style={{
                       width: `${CARD_WIDTH}px`,
-                      height: '440px',
-                      background: isActive ? `var(--card-bg)` : `#F7F0EA` ,
-                      border: '1px solid var(--border-color)',
-                      boxShadow: 'var(--shadow-md)',
-                      display: 'flex',
-                      flexDirection: 'column',
+                      height: '370px',
+                      background: isActive ? '#FFFFFF' : '#F7F0EA',
+                      boxShadow: isActive
+                        ? '0 8px 40px rgba(0,0,0,0.10)'
+                        : '0 2px 12px rgba(0,0,0,0.05)',
                     }}
                   >
-                    {/* Stars */}
-                    <div className="flex gap-1 mb-5">
-                      {[...Array(5)].map((_, si) => (
-                        <Star key={si} size={14} fill="var(--color-accent-gold)" stroke="none" />
-                      ))}
-                    </div>
-
                     {/* Title */}
                     <p
-                      className="text-sm font-display font-bold mb-3"
-                      style={{ color: 'var(--color-primary)' }}
+                      className=" font-[500] mb-8 leading-snug"
+                      style={{
+                        color: isActive ? '#484848' : '#B0A89E',
+                      }}
                     >
                       {t.title}
                     </p>
 
-                    {/* Quote — grows to fill remaining space */}
+                    {/* Quote */}
                     <blockquote
-                      className="text-sm leading-relaxed font-display flex-1"
-                      style={{ color: 'var(--text-secondary)' }}
+                      className="text-sm font-[400] leading-loose flex-1 "
+                      style={{
+                        color: isActive ? '#1F5E9E' : '#C5B9B0',
+                      }}
                     >
                       {t.text}
                     </blockquote>
 
-                    {/* Author — pinned to bottom */}
-                    <div className="flex items-center gap-3 mt-6 pt-6" style={{ borderTop: '1px solid var(--border-color)' }}>
+                    {/* Author */}
+                    <div className="flex flex-row items-center gap-2 mt-6">
                       <img
                         src={t.avatar}
                         alt={t.name}
-                        className="w-11 h-11 rounded-full object-cover flex-shrink-0"
-                        style={{ border: '2px solid var(--color-primary)' }}
+                        className="w-[52px] h-[52px] rounded-full object-cover"
+                        style={{ border: '2px solid #E5E7EB' }}
                       />
-                      <div>
+                      <div className="text-center">
                         <p
-                          className="text-xs font-display font-semibold uppercase tracking-wide"
-                          style={{ color: 'var(--text-primary)' }}
+                          className="text-[11px] font-bold uppercase tracking-widest"
+                          style={{ color: isActive ? '#1A1A2E' : '#B0A89E' }}
                         >
                           {t.name}
                         </p>
-                        <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                        <p
+                          className="text-[12px] mt-0.5"
+                          style={{ color: isActive ? '#6B7280' : '#C5B9B0' }}
+                        >
                           {t.role}, {t.company}
                         </p>
                       </div>
@@ -156,28 +144,27 @@ export default function TestimonialsSection() {
             })}
           </div>
 
-          {/* Controls */}
-          <div className="flex items-center justify-center gap-4 mt-8">
-          
-
-            <div className="flex gap-2 items-center">
-              {TESTIMONIALS.map((_, i) => (
-                <motion.button
-                  key={i}
-                  onClick={() => goTo(i)}
-                  animate={{
-                    width: i === current ? 24 : 8,
-                    background: i === current ? '#653C1A' : 'var(text-subhead)/40',
-                  }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                  className="h-2 rounded-full"
-                />
-              ))}
-            </div>
-
+          {/* Dots */}
+          <div className="flex items-center justify-center gap-[10px] mt-10">
+            {TESTIMONIALS.map((_, i) => (
+              <motion.button
+                key={i}
+                onClick={() => goTo(i)}
+                animate={{
+                  width: i === current ? 10 : 10,
+                  height: 10,
+                  background:
+                    i === current
+                      ? '#8B6343'
+                      : '#C8B4A0',
+                  scale: i === current ? 1.15 : 1,
+                }}
+                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                className="rounded-full cursor-pointer"
+                style={{ width: 14, height: 14 }}
+              />
+            ))}
           </div>
-
-         
         </div>
       </div>
     </section>
