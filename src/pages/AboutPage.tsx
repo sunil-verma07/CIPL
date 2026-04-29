@@ -1,9 +1,10 @@
-import { motion, Variants } from "framer-motion";
+import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import about_hero_bg from "../assets/about_hero_bg.jpg";
 import Button from "../components/ui/Button.tsx";
 
-const fadeUp: Variants = {
+// ─── Reusable animation variants ───────────────────────────────────────────
+const fadeUp = {
   hidden: { opacity: 0, y: 40 },
   show: (i = 0) => ({
     opacity: 1,
@@ -12,7 +13,7 @@ const fadeUp: Variants = {
   }),
 };
 
-const fadeLeft: Variants = {
+const fadeLeft = {
   hidden: { opacity: 0, x: -40 },
   show: {
     opacity: 1,
@@ -21,7 +22,7 @@ const fadeLeft: Variants = {
   },
 };
 
-const fadeRight: Variants = {
+const fadeRight = {
   hidden: { opacity: 0, x: 40 },
   show: {
     opacity: 1,
@@ -30,7 +31,7 @@ const fadeRight: Variants = {
   },
 };
 
-const stagger: Variants = {
+const stagger = {
   hidden: {},
   show: { transition: { staggerChildren: 0.1 } },
 };
