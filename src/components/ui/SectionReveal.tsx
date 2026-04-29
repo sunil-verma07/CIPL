@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useInView } from '../../hooks/useInView';
+import { useInView } from '../../hooks/usennView';
 
 export default function SectionReveal({ children, className = '', delay = 0, direction = 'up' }) {
   const [ref, inView] = useInView();
