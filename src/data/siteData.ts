@@ -35,7 +35,7 @@ export const HERO_SLIDES = [
       "The Core That Connects Every Venture.Crediple brings clarity, control, and growth across all business verticals.",
     description:
       "The Core That Connects Every Venture. Crediple brings clarity, control, and growth across all business verticals.",
-    cta1: { label: "Explore More", href: "/brands" },
+    cta1: { label: "Explore More", href: "/solutions" },
     cta2: { label: "Discover", href: "/about" },
     bg: home_hero_bg_1,
   },
@@ -50,7 +50,7 @@ export const HERO_SLIDES = [
       "The Core That Connects Every Venture.Crediple brings clarity, control, and growth across all business verticals.",
     description:
       "The Core That Connects Every Venture. Crediple brings clarity, control, and growth across all business verticals.",
-    cta1: { label: "Explore More", href: "/brands" },
+    cta1: { label: "Explore More", href: "/solutions" },
     cta2: { label: "Discover", href: "/about" },
     bg: home_hero_bg_2,
   },
@@ -65,7 +65,7 @@ export const HERO_SLIDES = [
       "The Core That Connects Every Venture.Crediple brings clarity, control, and growth across all business verticals.",
     description:
       "The Core That Connects Every Venture. Crediple brings clarity, control, and growth across all business verticals.",
-    cta1: { label: "Explore More", href: "/brands" },
+    cta1: { label: "Explore More", href: "/solutions" },
     cta2: { label: "Discover", href: "/about" },
     bg: home_hero_bg_3,
   },

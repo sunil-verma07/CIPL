@@ -5,6 +5,7 @@ import AnimatedInput from "../components/ui/AnimatedInput";
 import SectionReveal from "../components/ui/SectionReveal";
 import mapBg from "../assets/contact_banner_bg.jpg";
 import pinIcon from "../assets/map_pin.png";
+import { Link } from "react-router-dom";
 
 // ─── Variants ────────────────────────────────────────────────────────────────
 const fadeUp = {
@@ -302,7 +303,9 @@ export default function ContactPage() {
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
             >
+              <Link to="/contact">
               <Button variant="dark" icon="💬">Let's Talk</Button>
+              </Link>
             </motion.div>
           </div>
         </div>

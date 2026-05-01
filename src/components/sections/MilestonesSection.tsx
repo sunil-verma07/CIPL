@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { MILESTONES } from "../../data/siteData";
 import SectionReveal from "../ui/SectionReveal";
 import Button from "../ui/Button";
+import { Link } from "react-router-dom";
 
 // CLEAN COUNT UP (better than pachinko)
 function AnimatedYear({ value, delay = 0 }) {
@@ -82,11 +83,13 @@ export default function MilestonesSection() {
         </div>
 
         {/* BUTTON */}
-        <SectionReveal className="text-center mt-12">
-          <Button variant="secondary" size="lg">
-            Read More
-          </Button>
-        </SectionReveal>
+        <Link to="/about">
+          <SectionReveal className="text-center mt-12">
+            <Button variant="secondary" size="lg">
+              Read More
+            </Button>
+          </SectionReveal>
+        </Link>
       </div>
     </section>
   );

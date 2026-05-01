@@ -62,7 +62,7 @@ export default function Footer() {
   return (
     <footer style={{ background: "#FAFAFA" }}>
       {/* Main Footer */}
-      <div className="py-14 px-6" style={{ borderBottom: "1px solid #EEEBE8" }}>
+      <div className="py-14 px-6">
         <motion.div
           className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-start gap-12"
           variants={containerVariants}
@@ -73,7 +73,7 @@ export default function Footer() {
           {/* LEFT - Brand */}
           <motion.div
             variants={itemVariants}
-            className="flex flex-col items-start gap-2"
+            className="flex flex-col items-center gap-2 flex "
           >
             <span
               className="text-[22px] font-bold tracking-tight"
@@ -82,17 +82,17 @@ export default function Footer() {
               Crediple
             </span>
             <img src={logo} className="w-28" alt="YAKA logo" />
-            <p className="text-[12px] mt-1" style={{ color: "#717171" }}>
+            <p className="text-[12px] mt-1 " style={{ color: "#717171" }}>
               The Architect of Industry Evolution.
             </p>
           </motion.div>
 
           {/* RIGHT - Links Wrapper */}
-          <div className="flex gap-16 md:gap-24 ml-auto">
+          <div className="flex gap-32 md:gap-64 ml-auto ">
             {/* Portfolio */}
             <motion.div variants={itemVariants}>
               <h4
-                className="text-[17px] font-[500] mb-2"
+                className="text-[17px] font-[500] mb-4"
                 style={{ color: "#653C1A" }}
               >
                 Our Portfolio
@@ -115,7 +115,7 @@ export default function Footer() {
             {/* Company */}
             <motion.div variants={itemVariants}>
               <h4
-                className="text-[17px] font-[500] mb-2"
+                className="text-[17px] font-[500] mb-4"
                 style={{ color: "#653C1A" }}
               >
                 Company

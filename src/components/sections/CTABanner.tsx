@@ -25,8 +25,7 @@ export default function CTABanner() {
             transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
             className="flex flex-col items-center text-center max-w-[900px] w-full px-8 sm:px-12 py-10"
             style={{
-              background: 'rgba(255, 255, 255, 0.38)',
-         
+              background: 'rgba(255, 255, 255, 0.48)',    
               borderRadius: '16px',
               border: '1px solid rgba(255,255,255,0.55)',
               boxShadow: '0 4px 32px rgba(180,185,210,0.18)',
@@ -65,7 +64,9 @@ export default function CTABanner() {
               viewport={{ once: true }}
               transition={{ delay: 0.3, type: 'spring', stiffness: 220, damping: 18 }}
             >
+              <Link to="/contact">
               <Button variant="secondary" size="lg">Start Your Journey</Button>
+              </Link>
             </motion.div>
           </motion.div>
         </div>

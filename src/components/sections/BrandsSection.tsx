@@ -75,6 +75,7 @@ export default function BrandsSection() {
               </p>
 
               <Link
+                to="/brands"
                 aria-label={`Learn more about ${brand.name}`}
                 style={{ position: "static" }} // keeps Link in flow so it doesn't shrink card
               >
