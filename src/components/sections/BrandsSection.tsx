@@ -74,18 +74,15 @@ export default function BrandsSection() {
                 {brand.description}
               </p>
 
-              {/* Arrow — absolute, centered on bottom edge, half outside */}
               <Link
-                to={brand.href || `/brands/${brand.id}`}
                 aria-label={`Learn more about ${brand.name}`}
                 style={{ position: "static" }} // keeps Link in flow so it doesn't shrink card
               >
                 <motion.div
-                  whileTap={{ scale: 0.92 }}
                   transition={{ type: "spring", stiffness: 420, damping: 18 }}
                   className="absolute w-16 h-16 rounded-full bg-(--color-primary) flex justify-center items-center text-(--bg-base)"
                   style={{
-                    bottom: "-2rem", // ← half of h-16 (4rem / 2 = 2rem)
+                    bottom: "-2rem", 
                     left: "50%",
                     transform: "translateX(-50%)",
                     boxShadow: "0 4px 16px rgba(26,107,255,0.35)",

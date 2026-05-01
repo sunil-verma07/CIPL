@@ -1,15 +1,15 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   motion,
   AnimatePresence,
-  useMotionValue,
-  useTransform,
   useScroll,
+  useTransform,
 } from "framer-motion";
-import { Sun, Moon, Search, Menu, X } from "lucide-react";
+import { Search, Menu, X } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
 import { NAV_LINKS } from "../../data/siteData";
+import footer_logo from "../../assets/footer_logo.png";
 
 // ─── animation variants ────────────────────────────────────────────────────
 const desktopLinkContainer = {
@@ -70,53 +70,38 @@ const mobileLinkVariants = {
 
 // ─── main component ────────────────────────────────────────────────────────
 export default function Navbar() {
-  const { theme, toggleTheme } = useTheme();
   const location = useLocation();
-
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [visible, setVisible] = useState(true); // hide/show on scroll
+  const NAVBAR_H = 64;
 
-  const lastScrollY = useRef(0);
-  const NAVBAR_H = 64; // matches h-16
+  const isHomePage = location.pathname === "/";
+  const animStart = isHomePage ? 300 : 160;
+  const animEnd   = isHomePage ? 500 : 300;
 
-  // ── scroll logic ──────────────────────────────────────────────────────────
+  const { scrollY } = useScroll();
+
+  // ── Logo: comes from bottom, fades in, scales up ──────────────────────────
+  const navLogoOpacity = useTransform(scrollY, [animStart, animEnd], [0, 1]);
+  const navLogoScale   = useTransform(scrollY, [animStart, animEnd], [0.5, 1]);
+  const navLogoY       = useTransform(scrollY, [animStart, animEnd], [28, 0]);  // bottom → top
+
+
+  const LOGO_WIDTH = 56; 
+  const contentShiftX = useTransform(scrollY, [animStart, animEnd], [0, -LOGO_WIDTH / 2]);
+
+  // ── border/shadow on scroll ───────────────────────────────────────────────
   useEffect(() => {
-    const onScroll = () => {
-      const y = window.scrollY;
-
-      setScrolled(y > 20);
-
-      // At the very top → always show
-      if (y < NAVBAR_H) {
-        setVisible(true);
-        lastScrollY.current = y;
-        return;
-      }
-
-      const delta = y - lastScrollY.current;
-      if (delta > 6)
-        setVisible(false); // scrolling down  → hide
-      else if (delta < -6) setVisible(true); // scrolling up    → show
-
-      lastScrollY.current = y;
-    };
-
+    const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // close everything on route change
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [location.pathname]);
+  useEffect(() => { setMobileOpen(false); }, [location.pathname]);
 
-  // lock body scroll when mobile menu open
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
+    return () => { document.body.style.overflow = ""; };
   }, [mobileOpen]);
 
   const isActive = (path) => {
@@ -125,240 +110,254 @@ export default function Navbar() {
   };
 
   return (
-    <motion.nav
-      // ── initial slide-in on mount ──
-      initial={{ y: -80, opacity: 0 }}
-      animate={{
-        y: visible ? 0 : -NAVBAR_H - 4,
-        opacity: visible ? 1 : 0,
-      }}
-      transition={{
-        y: { type: "spring", stiffness: 260, damping: 28 },
-        opacity: { duration: 0.2 },
-      }}
-      style={{
-        position: "sticky",
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 50,
-        background: "var(--nav-bg)",
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
-        borderBottom: scrolled
-          ? "1px solid var(--border-color)"
-          : "1px solid transparent",
-        boxShadow: scrolled ? "var(--shadow-sm)" : "none",
-        transition:
-          "border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease",
-      }}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* ── Logo ── */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="flex-shrink-0"
-          >
-            <Link to="/">
-              <motion.span
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="text-3xl font-bold text-[#003c82] inline-block"
-              >
-                Crediple
-              </motion.span>
-            </Link>
-          </motion.div>
+    <>
+      <nav
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 50,
+          background: "var(--nav-bg)",
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
+          borderBottom: scrolled
+            ? "1px solid var(--border-color)"
+            : "1px solid transparent",
+          boxShadow: scrolled ? "var(--shadow-sm)" : "none",
+          transition: "border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease",
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
 
-          {/* ── Desktop Nav Links (no dropdowns) ── */}
-          <motion.div
-            variants={desktopLinkContainer}
-            initial="hidden"
-            animate="visible"
-            className="hidden md:flex items-center gap-0.5"
-          >
-            {NAV_LINKS.map((link) => (
-              <motion.div
-                key={link.path}
-                variants={desktopLinkItem}
-                className="relative"
-              >
-                {/* All links are plain — no dropdown */}
-                <NavItem link={link} active={isActive(link.path)} />
-              </motion.div>
-            ))}
-          </motion.div>
-
-          {/* ── Desktop Right: always-visible search + theme ── */}
-          <motion.div
-            variants={rightActionsContainer}
-            initial="hidden"
-            animate="visible"
-            className="hidden md:flex items-center gap-2"
-          >
-            {/* Always-open search */}
+            {/* ── Left: Crediple wordmark ── */}
             <motion.div
-              variants={rightActionItem}
-              style={{
-                background: "rgba(249, 246, 242, 1)",
-                borderRadius: "2rem",
-              }}
-              className="flex items-center gap-2 px-4 py-1.5"
-              whileFocusWithin={{ boxShadow: "0 0 0 2px var(--color-primary)" }}
-              transition={{ duration: 0.15 }}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              className="flex-shrink-0"
             >
-              
-              <input
-                placeholder="Search for..."
-                style={{
-                  background: "transparent",
-                  color: "rgba(188, 156, 129, 1)",
-                  width: 180,
-                }}
-                className="text-xs outline-none placeholder:text-[rgba(188, 156, 129, 1)]"
-              />
-              <Search
-                size={15}
-                style={{ color: "rgba(188, 156, 129, 1)", flexShrink: 0 }}
-              />
+              <Link to="/">
+                <motion.span
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="text-3xl font-bold text-[#003c82] inline-block"
+                >
+                  Crediple
+                </motion.span>
+              </Link>
             </motion.div>
 
-           
-          </motion.div>
-
-          {/* ── Mobile Controls ── */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="md:hidden flex items-center gap-1"
-          >
-            
-
-            <motion.button
-              onClick={() => setMobileOpen((o) => !o)}
-              whileTap={{ scale: 0.9 }}
-              style={{ color: "var(--text-primary)" }}
-              className="p-2 rounded-lg hover:bg-[var(--bg-surface)] transition-colors"
-              aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            {/* ── Center: Nav links — shift left when logo appears ── */}
+            <motion.div
+              variants={desktopLinkContainer}
+              initial="hidden"
+              animate="visible"
+              style={{ x: contentShiftX }}
+              className="hidden md:flex items-center gap-0.5"
             >
-              <AnimatePresence mode="wait">
-                {mobileOpen ? (
-                  <motion.span
-                    key="close"
-                    initial={{ rotate: -90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: 90, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    style={{ display: "flex" }}
-                  >
-                    <X size={22} />
-                  </motion.span>
-                ) : (
-                  <motion.span
-                    key="menu"
-                    initial={{ rotate: 90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: -90, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    style={{ display: "flex" }}
-                  >
-                    <Menu size={22} />
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </motion.button>
-          </motion.div>
-        </div>
-      </div>
-
-      {/* ── Mobile Menu ── */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            variants={mobileMenuVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            style={{
-              background: "var(--nav-bg)",
-              backdropFilter: "blur(20px)",
-              WebkitBackdropFilter: "blur(20px)",
-              borderTop: "1px solid var(--border-color)",
-            }}
-            className="md:hidden overflow-hidden"
-          >
-            <div className="px-4 py-4 flex flex-col gap-1">
-              {/* Nav links — no dropdowns */}
-              {NAV_LINKS.map((link, i) => (
-                <motion.div
-                  key={link.path}
-                  custom={i}
-                  variants={mobileLinkVariants}
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                >
-                  <Link
-                    to={link.path}
-                    style={{
-                      color: isActive(link.path)
-                        ? "var(--color-primary)"
-                        : "var(--text-secondary)",
-                      fontWeight: isActive(link.path) ? 600 : 400,
-                      fontFamily: "DM Sans, sans-serif",
-                    }}
-                    className="block px-4 py-3 rounded-xl text-sm hover:bg-[var(--bg-elevated)] transition-colors"
-                  >
-                    {link.label}
-                  </Link>
+              {NAV_LINKS.map((link) => (
+                <motion.div key={link.path} variants={desktopLinkItem} className="relative">
+                  <NavItem link={link} active={isActive(link.path)} />
                 </motion.div>
               ))}
+            </motion.div>
 
-              {/* Always-visible mobile search */}
+            {/*
+              ── Right: search bar + YAKA logo ──
+              The search bar shifts left together with nav links.
+              The logo sits to the RIGHT of the search bar, animating
+              in from below as the user scrolls.
+            */}
+            <motion.div
+              variants={rightActionsContainer}
+              initial="hidden"
+              animate="visible"
+              className="hidden md:flex items-center gap-3"
+            >
+              {/* Search bar — shifts left */}
               <motion.div
-                custom={NAV_LINKS.length}
-                variants={mobileLinkVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                className="mt-2 px-1"
+                variants={rightActionItem}
+                style={{ x: contentShiftX }}
               >
-                <div
+                <motion.div
                   style={{
-                    background: "var(--bg-surface)",
-                    border: "1px solid var(--border-color)",
-                    borderRadius: "0.75rem",
+                    background: "rgba(249, 246, 242, 1)",
+                    borderRadius: "2rem",
                   }}
-                  className="flex items-center gap-2 px-3 py-2"
+                  className="flex items-center gap-2 px-4 py-1.5"
+                  whileFocusWithin={{ boxShadow: "0 0 0 2px var(--color-primary)" }}
+                  transition={{ duration: 0.15 }}
                 >
-                  <Search
-                    size={16}
-                    style={{ color: "var(--text-muted)", flexShrink: 0 }}
-                  />
                   <input
                     placeholder="Search for..."
                     style={{
                       background: "transparent",
-                      color: "var(--text-primary)",
-                      fontFamily: "DM Sans, sans-serif",
+                      color: "rgba(188, 156, 129, 1)",
+                      width: 180,
                     }}
-                    className="flex-1 text-sm outline-none placeholder:text-[var(--text-muted)]"
+                    className="text-xs outline-none"
                   />
-                </div>
+                  <Search size={15} style={{ color: "rgba(188, 156, 129, 1)", flexShrink: 0 }} />
+                </motion.div>
               </motion.div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.nav>
+
+           
+              <motion.div
+                style={{
+                  opacity: navLogoOpacity,
+                  scale: navLogoScale,
+                  y: navLogoY,
+                  transformOrigin: "bottom center",
+                  overflow: "hidden",
+                  // width is always reserved so layout doesn't jump —
+                  // but we clip it to 0 height when invisible via maxHeight
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <img
+                  src={footer_logo}
+                  alt="A YAKA Enterprise"
+                  style={{
+                    height: "2rem",        // 32px mobile
+                    width: "auto",
+                    objectFit: "contain",
+                    display: "block",
+                    flexShrink: 0,
+                  }}
+                  className="md:!h-9"     // 36px on md+
+                />
+              </motion.div>
+            </motion.div>
+
+            {/* ── Mobile Controls ── */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="md:hidden flex items-center gap-1"
+            >
+              <motion.button
+                onClick={() => setMobileOpen((o) => !o)}
+                whileTap={{ scale: 0.9 }}
+                style={{ color: "var(--text-primary)" }}
+                className="p-2 rounded-lg hover:bg-[var(--bg-surface)] transition-colors"
+                aria-label={mobileOpen ? "Close menu" : "Open menu"}
+              >
+                <AnimatePresence mode="wait">
+                  {mobileOpen ? (
+                    <motion.span
+                      key="close"
+                      initial={{ rotate: -90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      exit={{ rotate: 90, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      style={{ display: "flex" }}
+                    >
+                      <X size={22} />
+                    </motion.span>
+                  ) : (
+                    <motion.span
+                      key="menu"
+                      initial={{ rotate: 90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      exit={{ rotate: -90, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      style={{ display: "flex" }}
+                    >
+                      <Menu size={22} />
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </motion.button>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* ── Mobile Menu ── */}
+        <AnimatePresence>
+          {mobileOpen && (
+            <motion.div
+              variants={mobileMenuVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              style={{
+                background: "var(--nav-bg)",
+                backdropFilter: "blur(20px)",
+                WebkitBackdropFilter: "blur(20px)",
+                borderTop: "1px solid var(--border-color)",
+              }}
+              className="md:hidden overflow-hidden"
+            >
+              <div className="px-4 py-4 flex flex-col gap-1">
+                {NAV_LINKS.map((link, i) => (
+                  <motion.div
+                    key={link.path}
+                    custom={i}
+                    variants={mobileLinkVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                  >
+                    <Link
+                      to={link.path}
+                      style={{
+                        color: isActive(link.path) ? "var(--color-primary)" : "var(--text-secondary)",
+                        fontWeight: isActive(link.path) ? 600 : 400,
+                        fontFamily: "DM Sans, sans-serif",
+                      }}
+                      className="block px-4 py-3 rounded-xl text-sm hover:bg-[var(--bg-elevated)] transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  </motion.div>
+                ))}
+
+                {/* Mobile search */}
+                <motion.div
+                  custom={NAV_LINKS.length}
+                  variants={mobileLinkVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  className="mt-2 px-1"
+                >
+                  <div
+                    style={{
+                      background: "var(--bg-surface)",
+                      border: "1px solid var(--border-color)",
+                      borderRadius: "0.75rem",
+                    }}
+                    className="flex items-center gap-2 px-3 py-2"
+                  >
+                    <Search size={16} style={{ color: "var(--text-muted)", flexShrink: 0 }} />
+                    <input
+                      placeholder="Search for..."
+                      style={{
+                        background: "transparent",
+                        color: "var(--text-primary)",
+                        fontFamily: "DM Sans, sans-serif",
+                      }}
+                      className="flex-1 text-sm outline-none placeholder:text-[var(--text-muted)]"
+                    />
+                  </div>
+                </motion.div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </nav>
+
+      {/* Spacer so content starts below fixed navbar */}
+      <div style={{ height: NAVBAR_H }} />
+    </>
   );
 }
 
-// ─── NavItem — plain link, no dropdown ────────────────────────────────────
+// ─── NavItem ───────────────────────────────────────────────────────────────
 function NavItem({ link, active }) {
   return (
     <Link
@@ -368,14 +367,11 @@ function NavItem({ link, active }) {
     >
       <span
         className="text-sm font-medium transition-colors duration-200"
-        style={{
-          color: active ? "var(--color-primary)" : "var(--text-secondary)",
-        }}
+        style={{ color: active ? "var(--color-primary)" : "var(--text-secondary)" }}
       >
         {link.label}
       </span>
 
-      {/* Animated active underline */}
       <motion.span
         layoutId="nav-underbar"
         className="absolute bottom-0 left-4 right-4 h-0.5 rounded-full"
@@ -385,7 +381,6 @@ function NavItem({ link, active }) {
         transition={{ type: "spring", stiffness: 380, damping: 30 }}
       />
 
-      {/* Hover background */}
       <motion.span
         className="absolute inset-0 rounded-lg -z-10"
         style={{ background: "var(--bg-surface)" }}

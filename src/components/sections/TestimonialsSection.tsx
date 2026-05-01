@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { TESTIMONIALS } from '../../data/siteData';
 import SectionReveal from '../ui/SectionReveal';
 
-const INTERVAL = 4000;
+const INTERVAL = 3000;
 const CARD_WIDTH = 370;
 const CARD_GAP = 24;
 const SIDE_OFFSET = CARD_WIDTH + CARD_GAP;

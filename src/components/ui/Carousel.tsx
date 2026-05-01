@@ -174,7 +174,7 @@ export default function SolutionsSlider() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="text-3xl sm:text-4xl font-semibold text-gray-800 tracking-tight"
+          className="text-3xl sm:text-4xl font-semibold text-gray-800 tracking-tight text-center mb-8"
           style={{
             fontSize: "clamp(26px, 3.5vw, 44px)",
             color: "var(--text-primary, #0D0F18)",
@@ -191,7 +191,7 @@ export default function SolutionsSlider() {
           {/* Left arrow */}
           <ArrowBtn dir="prev" onClick={prev} disabled={activeIndex === 0} />
 
-          {/* Cards viewport */}over
+          {/* Cards viewport */}
           <div className="flex-1 ">
             <AnimatePresence mode="popLayout" initial={false}>
               <motion.div
@@ -212,7 +212,7 @@ export default function SolutionsSlider() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.45, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
                     whileHover={{ y: -4, transition: { duration: 0.25 } }}
-                    className="rounded-xl border flex flex-col gap-5 p-7 sm:p-8 cursor-default"
+                    className="rounded-xl border flex flex-col gap-5 p-7 sm:p-8 cursor-default min-h-[400px]"
                     style={{
                       background: "var(--card-bg, #fff)",
                       borderColor: "rgba(155, 114, 80, 1)",

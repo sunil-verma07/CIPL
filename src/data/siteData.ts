@@ -96,7 +96,7 @@ export const BRANDS = [
   },
   {
     id: 3,
-    name: "Lawyix",
+    name: "Lawvix",
     category: "Legal",
     icon: "⚖️",
     color: "#C8933A",
@@ -107,7 +107,7 @@ export const BRANDS = [
   },
   {
     id: 4,
-    name: "Inl",
+    name: "Iitil",
     category: "Technology",
     icon: "💡",
     color: "#8B5CF6",
@@ -132,7 +132,7 @@ export const BRAND_ARTICLES = [
   {
     id: 2,
     category: "Legal",
-    title: "Lawyix",
+    title: "Lawvix",
     date: "January 18, 2024",
     excerpt:
       "Today, it is uncommon to not have access to high-speed wireless internet, regardless of your location on Earth.",
@@ -300,7 +300,7 @@ export const TESTIMONIALS = [
     name: 'Arjun Sharma',
     role: 'CEO',
     company: 'LegalTech India',
-    text: 'The Lawyix platform transformed our entire case management workflow. What used to take days now happens in hours. Crediple truly understands enterprise needs.',
+    text: 'The Lawvix platform transformed our entire case management workflow. What used to take days now happens in hours. Crediple truly understands enterprise needs.',
     avatar: user,
   },
   {
@@ -488,8 +488,8 @@ export const SOLUTIONS_SLIDES = [
 export const FOOTER_PORTFOLIO = [
   "My Doctor Capsule",
   "Loan Konnekt",
-  "Lawrix",
-  "Inl",
+  "Lawvix",
+  "Iitil",
 ];
 export const FOOTER_COMPANY = ["Legal", "Strategic Partnerships"];
 

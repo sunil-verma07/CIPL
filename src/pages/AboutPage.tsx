@@ -1,34 +1,26 @@
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Check } from "lucide-react";
 import about_hero_bg from "../assets/about_hero_bg.jpg";
 import Button from "../components/ui/Button.tsx";
+import yaka_logo from "../assets/yaka_logo.png"; // white logo for hero
 
 // ─── Reusable animation variants ───────────────────────────────────────────
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
   show: (i = 0) => ({
-    opacity: 1,
-    y: 0,
+    opacity: 1, y: 0,
     transition: { delay: i * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] },
   }),
 };
 
 const fadeLeft = {
   hidden: { opacity: 0, x: -40 },
-  show: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
-  },
+  show: { opacity: 1, x: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } },
 };
 
 const fadeRight = {
   hidden: { opacity: 0, x: 40 },
-  show: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
-  },
+  show: { opacity: 1, x: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } },
 };
 
 const stagger = {
@@ -37,6 +29,16 @@ const stagger = {
 };
 
 export default function AboutUs() {
+  // ── Logo scroll animation ─────────────────────────────────────────────────
+  // About hero is shorter (~380–520px), so animation completes sooner.
+  // White logo fades/moves out by 280px — navbar's blue logo fades in over
+  // the same range to create the seamless color-change handoff.
+  const { scrollY } = useScroll();
+  const logoOpacity = useTransform(scrollY, [0, 260],  [1, 0]);
+  const logoScale   = useTransform(scrollY, [0, 300],  [1, 0.45]);
+  const logoX       = useTransform(scrollY, [0, 300],  [0, -80]);
+  const logoY       = useTransform(scrollY, [0, 300],  [0, -50]);
+
   return (
     <div className="w-full overflow-x-hidden">
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
@@ -54,17 +56,45 @@ export default function AboutUs() {
               "linear-gradient(90deg, rgba(80,70,80,0.82) 0%, rgba(60,50,70,0.65) 30%, rgba(20,20,50,0.25) 60%, transparent 100%)",
           }}
         />
-
-        {/* Extra dark vignette on far left edge */}
         <div
           className="absolute inset-0"
           style={{
-            background:
-              "linear-gradient(90deg, rgba(0,0,0,0.45) 0%, transparent 45%)",
+            background: "linear-gradient(90deg, rgba(0,0,0,0.45) 0%, transparent 45%)",
           }}
         />
 
-        {/* Content */}
+        {/*
+          ── White YAKA logo — top right ──────────────────────────────────
+          Same scroll-out animation as homepage hero. Fades + drifts toward
+          top-left as user scrolls, handing off to the navbar's blue logo.
+        */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.85 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.5, duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
+          style={{
+            opacity: logoOpacity,
+            scale: logoScale,
+            x: logoX,
+            y: logoY,
+            position: "absolute",
+            top: 0,
+            right: 0,
+            zIndex: 30,
+            transformOrigin: "top right",
+            pointerEvents: "none",
+          }}
+          className="p-4 md:p-6"
+        >
+          <img
+            src={yaka_logo}
+            alt="A YAKA Enterprise"
+            className="h-14 w-auto object-contain md:h-20"
+            onError={(e) => { e.currentTarget.style.display = "none"; }}
+          />
+        </motion.div>
+
+        {/* Hero text content */}
         <div className="relative z-10 max-w-4xl px-6 ml-6 sm:ml-12 lg:ml-20">
           <motion.p
             initial={{ opacity: 0, y: 10 }}
@@ -103,37 +133,24 @@ export default function AboutUs() {
             animate="show"
             className="flex flex-wrap gap-2 sm:gap-3"
           >
-            {["HealthTech", "Fintech", "LegalTech", "DataTech"].map(
-              (text, i) => (
-                <motion.div key={text} variants={fadeUp} custom={i}>
-                  <span
-                    className="inline-block px-4 py-2 text-sm font-medium text-white border border-white/40 rounded-sm cursor-default"
-                    style={{
-                      background: "rgba(255,255,255,0.05)",
-                      backdropFilter: "blur(4px)",
-                    }}
-                  >
-                    {text}
-                  </span>
-                </motion.div>
-              ),
-            )}
+            {["HealthTech", "Fintech", "LegalTech", "DataTech"].map((text, i) => (
+              <motion.div key={text} variants={fadeUp} custom={i}>
+                <span
+                  className="inline-block px-4 py-2 text-sm font-medium text-white border border-white/40 rounded-sm cursor-default"
+                  style={{ background: "rgba(255,255,255,0.05)", backdropFilter: "blur(4px)" }}
+                >
+                  {text}
+                </span>
+              </motion.div>
+            ))}
           </motion.div>
         </div>
       </section>
 
       {/* ── FOUNDATION ───────────────────────────────────────────────────── */}
-      <section
-        className="py-16 md:py-20"
-        style={{ background: "var(--bg-surface)" }}
-      >
+      <section className="py-16 md:py-20" style={{ background: "var(--bg-surface)" }}>
         <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
-          <motion.div
-            variants={fadeLeft}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-          >
+          <motion.div variants={fadeLeft} initial="hidden" whileInView="show" viewport={{ once: true }}>
             <p className="text-sm font-light text-[#999] uppercase tracking-[0.25rem] mb-5">
               Our Foundation
             </p>
@@ -146,23 +163,14 @@ export default function AboutUs() {
             </h2>
           </motion.div>
 
-          <motion.div
-            variants={fadeRight}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-          >
+          <motion.div variants={fadeRight} initial="hidden" whileInView="show" viewport={{ once: true }}>
             <p className="text-xl md:text-2xl text-[#202020] leading-relaxed mb-4 font-medium">
               Crediple transforms traditional business models into scalable,
               technology driven ecosystems. We bring structure, intelligence,
               and scalability to every industry we build in.
             </p>
-            <p
-              className="text-sm font-light text-center"
-              style={{ color: "var(--color-primary-light)" }}
-            >
-              We are not just building Brands. We are building systems that
-              power industries.
+            <p className="text-sm font-light text-center" style={{ color: "var(--color-primary-light)" }}>
+              We are not just building Brands. We are building systems that power industries.
             </p>
           </motion.div>
         </div>
@@ -171,64 +179,39 @@ export default function AboutUs() {
       {/* ── PHILOSOPHY ───────────────────────────────────────────────────── */}
       <section className="py-20 px-4" style={{ background: "#F8F8F8" }}>
         <div className="max-w-5xl mx-auto">
-          <motion.h2
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
+          <motion.h2 variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }}
             className="text-3xl text-center mb-4 sm:text-4xl font-semibold text-gray-800 tracking-tight"
           >
             Our Operating Philosophy
           </motion.h2>
-          <motion.p
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            custom={1}
+          <motion.p variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} custom={1}
             className="text-center text-gray-500 text-sm md:text-base mb-12"
           >
-            We do not run businesses in isolation. We design interconnected
-            ecosystems.
+            We do not run businesses in isolation. We design interconnected ecosystems.
           </motion.p>
 
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            custom={2}
+          <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} custom={2}
             className="bg-white rounded-2xl shadow-lg px-6 sm:px-8 py-8"
           >
             <p className="text-center text-gray-500 text-sm mb-12">
               Every vertical we enter is evaluated on three principles:
             </p>
-
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 mb-6">
               {[
                 "Can it be systemised?",
                 "Can it be scaled through technology?",
                 "Can it improve decision making or access?",
               ].map((text, i) => (
-                <motion.div
-                  key={i}
-                  variants={fadeUp}
-                  initial="hidden"
-                  whileInView="show"
-                  viewport={{ once: true }}
-                  custom={i}
+                <motion.div key={i} variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} custom={i}
                   className="flex flex-col items-center text-center gap-4"
                 >
                   <div className="w-14 h-14 rounded-full bg-[#3b9eff] flex items-center justify-center text-white text-xl font-bold shadow-md">
                     {i + 1}
                   </div>
-                  <p className="text-sm font-semibold text-[#1a1f36] leading-snug max-w-[160px]">
-                    {text}
-                  </p>
+                  <p className="text-sm font-semibold text-[#1a1f36] leading-snug max-w-[160px]">{text}</p>
                 </motion.div>
               ))}
             </div>
-
             <div className="border-t border-gray-100 mb-4" />
             <p className="text-center text-[#3b9eff] font-bold text-base md:text-lg">
               If the answer is yes — we build it.
@@ -240,13 +223,7 @@ export default function AboutUs() {
       {/* ── APPROACH ─────────────────────────────────────────────────────── */}
       <section className="py-16 md:py-20 bg-white">
         <div className="max-w-5xl mx-auto px-6">
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
+          <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="text-center mb-12">
             <h2 className="text-3xl text-center mb-4 sm:text-4xl font-semibold text-gray-800 tracking-tight">
               Our Approach
             </h2>
@@ -256,66 +233,33 @@ export default function AboutUs() {
           </motion.div>
 
           <div className="grid md:grid-cols-2 gap-6 mb-6">
-            <motion.div
-              variants={fadeLeft}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true }}
+            <motion.div variants={fadeLeft} initial="hidden" whileInView="show" viewport={{ once: true }}
               className="p-8 bg-white rounded-2xl shadow-md"
             >
-              <span className="text-red-500 text-2xl font-bold mb-4 block">
-                ✕
-              </span>
-              <h3 className="text-base font-bold text-gray-900 mb-3">
-                Instead of asking:
-              </h3>
-              <p className="text-sm text-gray-600 italic">
-                What service should we offer?
-              </p>
+              <span className="text-red-500 text-2xl font-bold mb-4 block">✕</span>
+              <h3 className="text-base font-bold text-gray-900 mb-3">Instead of asking:</h3>
+              <p className="text-sm text-gray-600 italic">What service should we offer?</p>
             </motion.div>
 
-            <motion.div
-              variants={fadeRight}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true }}
+            <motion.div variants={fadeRight} initial="hidden" whileInView="show" viewport={{ once: true }}
               className="p-8 rounded-2xl text-white shadow-md"
-              style={{
-                background: "linear-gradient(135deg, #3297FC 0%, #1A5FB8 100%)",
-              }}
+              style={{ background: "linear-gradient(135deg, #3297FC 0%, #1A5FB8 100%)" }}
             >
-              <span className="text-white text-2xl font-bold mb-4 block">
-                ✓
-              </span>
+              <span className="text-white text-2xl font-bold mb-4 block">✓</span>
               <h3 className="text-base font-bold mb-3">We ask:</h3>
               <p className="text-sm italic">
-                What system needs to exist to solve this industry problem at
-                scale?
+                What system needs to exist to solve this industry problem at scale?
               </p>
             </motion.div>
           </div>
 
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            custom={2}
+          <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} custom={2}
             className="bg-white rounded-2xl shadow-md px-8 py-8 flex flex-col items-center gap-5"
           >
-            <p className="text-gray-700 text-sm">
-              This approach allows us to build:
-            </p>
+            <p className="text-gray-700 text-sm">This approach allows us to build:</p>
             <div className="flex flex-wrap justify-center gap-3">
-              {[
-                "Long-term infrastructure",
-                "Repeatable models",
-                "Scalable ecosystems",
-              ].map((label) => (
-                <span
-                  key={label}
-                  className="px-6 py-3 rounded-full bg-[#3297FC] text-white text-sm font-medium"
-                >
+              {["Long-term infrastructure", "Repeatable models", "Scalable ecosystems"].map((label) => (
+                <span key={label} className="px-6 py-3 rounded-full bg-[#3297FC] text-white text-sm font-medium">
                   {label}
                 </span>
               ))}
@@ -327,13 +271,7 @@ export default function AboutUs() {
       {/* ── DIFFERENT ────────────────────────────────────────────────────── */}
       <section className="py-16 md:py-20 bg-white">
         <div className="max-w-4xl mx-auto px-6">
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
+          <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="text-center mb-12">
             <h2 className="text-3xl text-center mb-4 sm:text-4xl font-semibold text-gray-800 tracking-tight">
               What Makes Crediple Different
             </h2>
@@ -341,53 +279,24 @@ export default function AboutUs() {
 
           <div className="flex flex-col gap-4">
             {[
-              {
-                left: "Most companies operate vertically",
-                right: "We operate horizontally across industries",
-              },
-              {
-                left: "Most brands sell services",
-                right: "We design frameworks that deliver services at scale",
-              },
-              {
-                left: "Most systems are disconnected",
-                right: "We connect intelligence across domains",
-              },
+              { left: "Most companies operate vertically",  right: "We operate horizontally across industries" },
+              { left: "Most brands sell services",          right: "We design frameworks that deliver services at scale" },
+              { left: "Most systems are disconnected",      right: "We connect intelligence across domains" },
             ].map((item, i) => (
-              <motion.div
-                key={i}
-                variants={fadeUp}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true }}
-                custom={i}
+              <motion.div key={i} variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} custom={i}
                 className="grid grid-cols-2 rounded-2xl overflow-hidden border border-gray-100 shadow-sm bg-white"
               >
-                {/* Left — plain white */}
                 <div className="px-6 sm:px-8 py-6 bg-white flex items-center">
                   <p className="text-gray-500 text-sm">{item.left}</p>
                 </div>
-
-                {/* Right — blue-tinted with radial glow */}
                 <div className="relative overflow-hidden flex items-center">
-                  {/* Thin divider */}
                   <div className="absolute left-0 top-1/2 -translate-y-1/2 w-px h-2/3 bg-gray-200 z-10" />
-
-            
-                  {/* Bottom-left secondary glow for depth */}
                   <div
                     className="absolute -bottom-8 left-4 w-32 h-32 rounded-full pointer-events-none"
-                    style={{
-                      background:
-                        "radial-gradient(circle, rgba(96, 146, 196, 0.45) 0%, transparent 70%)",
-                      filter: "blur(14px)",
-                    }}
+                    style={{ background: "radial-gradient(circle, rgba(96,146,196,0.45) 0%, transparent 70%)", filter: "blur(14px)" }}
                   />
-
                   <div className="px-6 sm:px-8 py-6 bg-blue-50/60 h-full w-full flex items-center relative z-10">
-                    <p className="text-(--color-primary) font-semibold text-sm">
-                      {item.right}
-                    </p>
+                    <p className="text-(--color-primary) font-semibold text-sm">{item.right}</p>
                   </div>
                 </div>
               </motion.div>
@@ -399,51 +308,23 @@ export default function AboutUs() {
       {/* ── STRUCTURE ────────────────────────────────────────────────────── */}
       <section className="py-16 md:py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
+          <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="text-center mb-12">
             <h2 className="text-3xl text-center mb-4 sm:text-4xl font-semibold text-gray-800 tracking-tight">
               How We Are Structured
             </h2>
-            <p className="text-gray-500 text-sm">
-              Crediple operates through a Hub & Ecosystem model
-            </p>
+            <p className="text-gray-500 text-sm">Crediple operates through a Hub & Ecosystem model</p>
           </motion.div>
 
           <div className="grid md:grid-cols-2 gap-6 mb-6 max-w-4xl mx-auto">
-            {/* Left card — blue gradient */}
-            <motion.div
-              variants={fadeLeft}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true }}
+            <motion.div variants={fadeLeft} initial="hidden" whileInView="show" viewport={{ once: true }}
               className="p-8 rounded-2xl text-white"
-              style={{
-                background:
-                  "linear-gradient(145deg, #3297FC 0%, #277FDE 60%, #1A5FB8 100%)",
-              }}
+              style={{ background: "linear-gradient(145deg, #3297FC 0%, #277FDE 60%, #1A5FB8 100%)" }}
             >
-              <h3 className="text-xl font-bold text-white mb-3">
-                Central Intelligence Layer
-              </h3>
-              <p className="text-white/80 text-sm mb-6">
-                A unified strategic and technology backbone that governs:
-              </p>
+              <h3 className="text-xl font-bold text-white mb-3">Central Intelligence Layer</h3>
+              <p className="text-white/80 text-sm mb-6">A unified strategic and technology backbone that governs:</p>
               <ul className="space-y-4">
-                {[
-                  "Product architecture",
-                  "Data systems",
-                  "Brand frameworks",
-                  "Growth strategy",
-                ].map((item) => (
-                  <li
-                    key={item}
-                    className="flex items-center gap-3 text-white text-sm"
-                  >
+                {["Product architecture", "Data systems", "Brand frameworks", "Growth strategy"].map((item) => (
+                  <li key={item} className="flex items-center gap-3 text-white text-sm">
                     <span className="w-2 h-2 rounded-full bg-white/80 flex-shrink-0" />
                     {item}
                   </li>
@@ -451,27 +332,13 @@ export default function AboutUs() {
               </ul>
             </motion.div>
 
-            {/* Right card — white with blue border */}
-            <motion.div
-              variants={fadeRight}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true }}
+            <motion.div variants={fadeRight} initial="hidden" whileInView="show" viewport={{ once: true }}
               className="p-8 rounded-2xl bg-white border-2 border-[#3297FC]"
             >
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
-                Independent Business Units
-              </h3>
-              <p className="text-gray-500 text-sm mb-5">
-                Each business operates as an independent brand ecosystem:
-              </p>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Independent Business Units</h3>
+              <p className="text-gray-500 text-sm mb-5">Each business operates as an independent brand ecosystem:</p>
               <ul className="space-y-3 mb-6 text-[#364153]">
-                {[
-                  "HealthTech systems",
-                  "FinTech systems",
-                  "LegalTech systems",
-                  "DataTech systems",
-                ].map((item) => (
+                {["HealthTech systems", "FinTech systems", "LegalTech systems", "DataTech systems"].map((item) => (
                   <li key={item} className="flex items-center gap-2 text-sm">
                     <span className="w-2 h-2 rounded-full bg-[#3297FC] flex-shrink-0" />
                     {item}
@@ -479,21 +346,11 @@ export default function AboutUs() {
                 ))}
               </ul>
               <div className="border-t border-gray-100 pt-4">
-                <p className="text-sm font-semibold text-black mb-2">
-                  Each business has:
-                </p>
+                <p className="text-sm font-semibold text-black mb-2">Each business has:</p>
                 <ul className="space-y-1">
-                  {[
-                    "Its own operational focus",
-                    "Its own customer journey",
-                    "Its own performance metrics",
-                  ].map((item) => (
-                    <li
-                      key={item}
-                      className="flex items-center gap-1 my-2 text-[#364153] text-xs"
-                    >
-                      <span className="text-blue-400">→</span>
-                      {item}
+                  {["Its own operational focus", "Its own customer journey", "Its own performance metrics"].map((item) => (
+                    <li key={item} className="flex items-center gap-1 my-2 text-[#364153] text-xs">
+                      <span className="text-blue-400">→</span>{item}
                     </li>
                   ))}
                 </ul>
@@ -501,20 +358,12 @@ export default function AboutUs() {
             </motion.div>
           </div>
 
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            custom={2}
+          <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} custom={2}
             className="p-5 rounded-2xl bg-[#F9FAFB] text-center"
           >
             <p className="text-gray-600 text-sm">
               But all are powered by the{" "}
-              <span className="text-[#3297FC] font-semibold">
-                same core intelligence layer
-              </span>
-              .
+              <span className="text-[#3297FC] font-semibold">same core intelligence layer</span>.
             </p>
           </motion.div>
         </div>
@@ -523,38 +372,14 @@ export default function AboutUs() {
       {/* ── COMMITMENT ───────────────────────────────────────────────────── */}
       <section className="py-16 md:py-20 bg-gray-50">
         <div className="max-w-3xl mx-auto px-6">
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            className="text-center mb-10"
-          >
-            <h2 className="text-3xl sm:text-4xl font-semibold text-gray-800 tracking-tight mb-4">
-              Our Commitment
-            </h2>
-            <p className="text-gray-500 text-sm">
-              We are committed to building:
-            </p>
+          <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="text-center mb-10">
+            <h2 className="text-3xl sm:text-4xl font-semibold text-gray-800 tracking-tight mb-4">Our Commitment</h2>
+            <p className="text-gray-500 text-sm">We are committed to building:</p>
           </motion.div>
 
-          <motion.div
-            variants={stagger}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            className="grid sm:grid-cols-2 gap-4"
-          >
-            {[
-              "Transparent systems",
-              "Scalable digital infrastructure",
-              "Industry ready technology frameworks",
-              "Long term ecosystem value",
-            ].map((item, i) => (
-              <motion.div
-                key={item}
-                variants={fadeUp}
-                custom={i}
+          <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true }} className="grid sm:grid-cols-2 gap-4">
+            {["Transparent systems", "Scalable digital infrastructure", "Industry ready technology frameworks", "Long term ecosystem value"].map((item, i) => (
+              <motion.div key={item} variants={fadeUp} custom={i}
                 className="flex items-center gap-4 p-5 bg-white rounded-2xl shadow-sm border border-gray-100"
               >
                 <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center shrink-0">
@@ -570,46 +395,23 @@ export default function AboutUs() {
       {/* ── FUTURE DIRECTION ─────────────────────────────────────────────── */}
       <section className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-6">
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
+          <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }}
             className="rounded-3xl px-8 sm:px-14 py-8 text-center"
-            style={{
-              background:
-                "linear-gradient(160deg, rgb(131, 193, 255) 0%, #6da8e7 50%, #4a8adf 100%)",
-            }}
+            style={{ background: "linear-gradient(160deg, rgb(131,193,255) 0%, #6da8e7 50%, #4a8adf 100%)" }}
           >
-            <h2 className="text-3xl sm:text-4xl font-semibold text-gray-800 tracking-tight mb-4">
-              Future Direction
-            </h2>
+            <h2 className="text-3xl sm:text-4xl font-semibold text-gray-800 tracking-tight mb-4">Future Direction</h2>
             <p className="text-white/90 text-md sm:text-lg mb-4">
               Our focus is not just expansion. It is{" "}
-              <strong className="text-white font-bold">
-                ecosystem convergence
-              </strong>
-              .
+              <strong className="text-white font-bold">ecosystem convergence</strong>.
             </p>
             <p className="text-white/65 text-sm mb-10 mx-auto leading-relaxed">
-              Where healthcare, finance, legal systems, and data intelligence
-              begin to interact seamlessly under one <br />
+              Where healthcare, finance, legal systems, and data intelligence begin to interact seamlessly under one <br />
               unified structure.
             </p>
             <div className="flex flex-wrap justify-center gap-3">
-              {[
-                "Healthcare",
-                "Finance",
-                "Legal Systems",
-                "Data Intelligence",
-              ].map((tag) => (
-                <span
-                  key={tag}
-                  className="px-5 py-2.5 rounded-4xl text-sm text-white/75"
-                  style={{
-                    background: "rgba(255,255,255,0.22)",
-                    backdropFilter: "blur(6px)",
-                  }}
+              {["Healthcare", "Finance", "Legal Systems", "Data Intelligence"].map((tag) => (
+                <span key={tag} className="px-5 py-2.5 rounded-4xl text-sm text-white/75"
+                  style={{ background: "rgba(255,255,255,0.22)", backdropFilter: "blur(6px)" }}
                 >
                   {tag}
                 </span>
@@ -620,55 +422,30 @@ export default function AboutUs() {
       </section>
 
       {/* ── FOOTER SIGN-OFF ───────────────────────────────────────────────── */}
-      <section
-        className="py-20 text-center text-white"
-        style={{
-          background: "linear-gradient(180deg, #0d1b2e 0%, #0a1628 100%)",
-        }}
+      <section className="py-20 text-center text-white"
+        style={{ background: "linear-gradient(180deg, #0d1b2e 0%, #0a1628 100%)" }}
       >
         <div className="max-w-xl mx-auto px-6">
-          <motion.h2
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
+          <motion.h2 variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }}
             className="text-4xl font-black tracking-widest text-white mb-4"
           >
             CREDIPLE
           </motion.h2>
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            custom={1}
+          <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} custom={1}
             className="w-12 h-0.5 bg-blue-500 mx-auto mb-8"
           />
-          <motion.p
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            custom={2}
+          <motion.p variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} custom={2}
             className="text-white/60 text-sm mb-4"
           >
             Crediple is not a traditional holding company.
           </motion.p>
-          <motion.p
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            custom={3}
+          <motion.p variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} custom={3}
             className="text-white font-bold text-lg leading-snug mb-12"
           >
-            It is a multi-domain system architecture designed to transform how
-            industries operate.
+            It is a multi-domain system architecture designed to transform how industries operate.
           </motion.p>
           <div className="border-t border-white/10 pt-6">
-            <p className="text-white/40 text-xs">
-              © 2026 Crediple. Building systems that power industries.
-            </p>
+            <p className="text-white/40 text-xs">© 2026 Crediple. Building systems that power industries.</p>
           </div>
         </div>
       </section>
